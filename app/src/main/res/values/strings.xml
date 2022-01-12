@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">OpenLibraryDocs</string>
+    <string name="search_document">Search for Documents</string>
 </resources>
