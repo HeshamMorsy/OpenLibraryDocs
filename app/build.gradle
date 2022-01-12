@@ -1,8 +1,8 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
-    id("kotlin-kapt")
-    id("dagger.hilt.android.plugin")
+    id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
 }
 
 android {
@@ -19,9 +19,13 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField "String", "baseUrl", '"http://openlibrary.org/"'
+        }
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField "String", "baseUrl", '"http://openlibrary.org/"'
         }
     }
     compileOptions {
@@ -45,8 +49,8 @@ dependencies {
 
     // Hilt
     def hilt = '2.38.1'
-    implementation("com.google.dagger:hilt-android:$hilt")
-    kapt("com.google.dagger:hilt-android-compiler:$hilt")
+    implementation "com.google.dagger:hilt-android:$hilt"
+    kapt "com.google.dagger:hilt-android-compiler:$hilt"
 
     // ViewModel and LiveData
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
@@ -75,4 +79,10 @@ dependencies {
 // Allow references to generated code
 kapt {
     correctErrorTypes = true
+    javacOptions {
+        // These options are normally set automatically via the Hilt Gradle plugin, but we
+        // set them manually to workaround a bug in the Kotlin 1.5.20
+        option("-Adagger.fastInit=ENABLED")
+        option("-Adagger.hilt.android.internal.disableAndroidSuperclassValidation=true")
+    }
 }
