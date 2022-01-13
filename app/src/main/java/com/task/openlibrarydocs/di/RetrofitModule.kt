@@ -15,6 +15,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
+/**
+ * This component is for providing the retrofit and it's services
+ */
 @Module
 @InstallIn(SingletonComponent::class)
 object RetrofitModule {

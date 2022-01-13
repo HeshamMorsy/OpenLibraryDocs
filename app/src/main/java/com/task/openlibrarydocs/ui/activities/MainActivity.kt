@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.task.openlibrarydocs.R
 import com.task.openlibrarydocs.data.model.domain.Document
 import com.task.openlibrarydocs.ui.adapter.DocumentsAdapter
+import com.task.openlibrarydocs.ui.dialogs.ErrorDialog
 import com.task.openlibrarydocs.utils.DataState
 import com.task.openlibrarydocs.utils.Extensions.textChanges
 import dagger.hilt.android.AndroidEntryPoint
@@ -78,9 +79,21 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun displayError(message: String?) {
-        message?.let {
-            // todo show error message for the user
-        }
+        // prepare error dialog properties
+        // 1- title
+        val dialogTitle = resources.getString(R.string.error)
+        // 2- error message
+        val dialogMessage = message ?: resources.getString(R.string.unkown_error)
+        // 3- button text
+        val btnText = resources.getString(R.string.close)
+        // show error dialog
+        ErrorDialog(
+            title = dialogTitle,
+            message = dialogMessage,
+            btnText = btnText
+        )
+        .show(supportFragmentManager, "ErrorDialog")
+
     }
 
     private fun displayProgressBar(isDisplayed: Boolean) {
@@ -94,8 +107,20 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun openDetailsActivity(document: Document){
-        // todo open details activity
+        val detailsIntent = Intent(this, DetailsActivity::class.java).apply {
+            putExtra(DOCUMENT_KEY, document)
+        }
+        startForResult.launch(detailsIntent)
+    }
 
+    // register for details activity results if the user clicked on author name or title
+    private val startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            result: ActivityResult ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val intent = result.data
+            // Handle the Intent
+            //do stuff here
+        }
     }
 
     private fun attachListeners() {

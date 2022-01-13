@@ -9,6 +9,9 @@ import dagger.hilt.android.components.ActivityComponent
 import dagger.hilt.android.scopes.ActivityScoped
 import kotlinx.coroutines.channels.Channel
 
+/**
+ * This component is for providing the document adapter and it's stuff
+ */
 @Module
 @InstallIn(ActivityComponent::class)
 object DocumentAdapterModule {
