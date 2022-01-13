@@ -92,21 +92,23 @@ class MainActivity : AppCompatActivity() {
             message = dialogMessage,
             btnText = btnText
         )
-        .show(supportFragmentManager, "ErrorDialog")
+            .show(supportFragmentManager, "ErrorDialog")
 
     }
 
     private fun displayProgressBar(isDisplayed: Boolean) {
         documentsAdapter.updateHideFooter(!isDisplayed)
-            if (isDisplayed)
-                listRecycler.scrollToPosition(documentsAdapter.itemCount - 1)
+        if (isDisplayed)
+            listRecycler.scrollToPosition(documentsAdapter.itemCount - 1)
+        else
+            swipeRefreshLayout.isRefreshing = false
     }
 
     private fun appendDocuments(docs: List<Document>) {
         documentsAdapter.addList(ArrayList(docs))
     }
 
-    private fun openDetailsActivity(document: Document){
+    private fun openDetailsActivity(document: Document) {
         val detailsIntent = Intent(this, DetailsActivity::class.java).apply {
             putExtra(DOCUMENT_KEY, document)
         }
@@ -114,14 +116,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     // register for details activity results if the user clicked on author name or title
-    private val startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            result: ActivityResult ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val intent = result.data
-            // Handle the Intent
-            //do stuff here
+    private val startForResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val intent = result.data
+                // Handle the Intent
+                //do stuff here
+            }
         }
-    }
 
     private fun attachListeners() {
         // detect scroll position in recycler view
@@ -151,5 +153,10 @@ class MainActivity : AppCompatActivity() {
                 viewModel.setStateEvent(MainStateEvent.RestartPaginationEvent)
             }
             .launchIn(lifecycleScope)
+
+        // refresh swipe to refresh Layout listener to restart pagination
+        swipeRefreshLayout.setOnRefreshListener {
+            viewModel.setStateEvent(MainStateEvent.RestartPaginationEvent)
+        }
     }
 }
