@@ -3,6 +3,8 @@ package com.task.openlibrarydocs.ui.activities
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -23,6 +25,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 const val DOCUMENT_KEY = "documentKey"
+const val QUERY_KEY = "queryKey"
+const val QUERY_VALUE = "queryValue"
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -31,6 +35,8 @@ class MainActivity : AppCompatActivity() {
 
     @Inject
     lateinit var documentsAdapter: DocumentsAdapter
+
+    private var searchFromDetails = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -119,9 +125,24 @@ class MainActivity : AppCompatActivity() {
     private val startForResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
             if (result.resultCode == Activity.RESULT_OK) {
-                val intent = result.data
-                // Handle the Intent
-                //do stuff here
+                // get the query key and the query value to restart pagination
+                result.data?.let {
+                    it.extras?.let { bundle ->
+                        if (it.hasExtra(QUERY_KEY))
+                            viewModel.updateQueryKey(bundle[QUERY_KEY] as String)
+                        if (it.hasExtra(QUERY_VALUE)) {
+                            searchFromDetails = true
+                            // changing search text will restart pagination automatically
+                            searchET.setText(bundle[QUERY_VALUE] as String)
+                        }
+                        // make search from details activity boolean go back to false
+                        // to get the right values if the user type a new text on search
+                        Handler(Looper.getMainLooper())
+                            .postDelayed({
+                                searchFromDetails = false
+                            }, 1000)
+                    }
+                }
             }
         }
 
@@ -148,7 +169,8 @@ class MainActivity : AppCompatActivity() {
             .debounce(500)
             .map { it.toString() }
             .onEach {
-                viewModel.updateQueryKey(DEFAULT_QUERY_KEY)
+                if (!searchFromDetails)
+                    viewModel.updateQueryKey(DEFAULT_QUERY_KEY)
                 viewModel.updateQueryValue(it)
                 viewModel.setStateEvent(MainStateEvent.RestartPaginationEvent)
             }

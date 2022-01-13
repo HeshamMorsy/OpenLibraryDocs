@@ -73,7 +73,6 @@ class MainViewModel @Inject constructor(
     private fun restartPagination() {
         page = 1
         onChangeDocumentScrollPosition(0)
-        updateQueryKey(DEFAULT_QUERY_KEY)
         _dataState.value = DataState.CLEAR
         setStateEvent(MainStateEvent.GetDocumentEvent)
     }
