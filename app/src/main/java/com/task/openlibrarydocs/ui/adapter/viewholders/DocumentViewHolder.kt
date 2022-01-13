@@ -1,5 +1,7 @@
 package com.task.openlibrarydocs.ui.adapter.viewholders
 
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.task.openlibrarydocs.data.model.domain.Document
@@ -20,7 +22,11 @@ class DocumentViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         // handle on click on the document cell
         itemView.setOnClickListener {
+            // disable cell to prevent multiple clicks
+            it.isEnabled = false
             actionChannel.trySend(item)
+            // this is to disable the multiple clicks on cell until the new screen is opened
+            Handler(Looper.getMainLooper()).postDelayed({it.isEnabled = true}, 1000)
         }
     }
 
