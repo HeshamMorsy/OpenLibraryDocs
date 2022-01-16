@@ -2,6 +2,7 @@ package com.task.openlibrarydocs.di
 
 import com.task.openlibrarydocs.data.api.OpenLibraryRetrofit
 import com.task.openlibrarydocs.data.model.NetworkMapper
+import com.task.openlibrarydocs.repository.MainRepo
 import com.task.openlibrarydocs.repository.MainRepository
 import dagger.Module
 import dagger.Provides
@@ -21,7 +22,7 @@ object RepositoryModule {
     fun provideMainRepository(
         retrofit: OpenLibraryRetrofit,
         networkMapper: NetworkMapper
-    ): MainRepository {
+    ): MainRepo {
         return MainRepository(retrofit, networkMapper)
     }
 }

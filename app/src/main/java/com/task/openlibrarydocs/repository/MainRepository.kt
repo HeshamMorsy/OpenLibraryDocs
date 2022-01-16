@@ -14,9 +14,9 @@ class MainRepository
 constructor(
     private val retrofit: OpenLibraryRetrofit,
     private val networkMapper: NetworkMapper
-) {
+): MainRepo {
 
-    suspend fun getDocuments(queryMap: HashMap<String, String>): Flow<DataState<List<Document>>> = flow{
+    override suspend fun getDocuments(queryMap: HashMap<String, String>): Flow<DataState<List<Document>>> = flow{
         emit(DataState.Loading)
         try {
             val apiResponse = retrofit.searchWithData(queryMap)

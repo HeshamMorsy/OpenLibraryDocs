@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.task.openlibrarydocs.data.model.domain.Document
+import com.task.openlibrarydocs.repository.MainRepo
 import com.task.openlibrarydocs.repository.MainRepository
 import com.task.openlibrarydocs.utils.DataState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,7 +21,7 @@ const val AUTHOR_QUERY_KEY = "author"
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val mainRepository: MainRepository
+    private val mainRepository: MainRepo
 ) : ViewModel() {
 
     // live data for updating ui with the new list in responses
